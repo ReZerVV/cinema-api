@@ -11,12 +11,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Genres\Actions\Commands\" />
+    <Folder Include="Actions\Genres\Commands\" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.59" />
     <PackageReference Include="MediatR" Version="12.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0" />
   </ItemGroup>
 
 </Project>

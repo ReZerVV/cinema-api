@@ -39,7 +39,7 @@ internal class MediaRepository : IMediaRepository
     {
         return _db.Medias
             .Include(m => m.Movie)
-            .Where(m => m.Status == Domain.Movies.Enums.DownloadStatus.Waiting)
+            .Where(m => m.Status == Domain.Movies.Enums.LoadingStatus.Waiting)
             .OrderBy(m => m.CreateAt);
     }
 

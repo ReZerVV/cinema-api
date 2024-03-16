@@ -6,6 +6,7 @@ namespace Cinema.Domain.Movies.Entities;
 
 public class Movie : AggregateRoot
 {
+    public int? KinopoiskId { get; set; }
     public string Name { get; set; }
     public string EnName { get; set; }
     public string Description { get; set; }
@@ -28,10 +29,12 @@ public class Movie : AggregateRoot
     public static Movie Create(
         string name, string enName, string description, string shortDescription,
         string type, int year, int movieLength, string country, float rating, int votes,
-        string posterDownloadUrl, string backdropDownloadUrl, string videoDownloadUrl, IEnumerable<Genre> genres)
+        string posterDownloadUrl, string backdropDownloadUrl, string videoDownloadUrl,
+        IEnumerable<Genre> genres, int? kinopoiskId = null)
     {
         var movie = new Movie()
         {
+            KinopoiskId = kinopoiskId,
             Name = name,
             EnName = enName,
             Description = description,

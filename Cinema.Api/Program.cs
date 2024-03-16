@@ -1,10 +1,11 @@
+using Cinema.Api.Middlewares;
 using Cinema.Application;
 using Cinema.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
-    .AddApplication()
+    .AddApplication(builder.Configuration)
     .AddInfrastructure(builder.Configuration);
 
 builder.Services.AddControllers();
@@ -33,6 +34,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<ErrorHandlingMiddleware>();
 app.UseCors();
 app.UseStaticFiles();
 

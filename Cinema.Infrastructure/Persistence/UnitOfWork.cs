@@ -19,9 +19,9 @@ internal class UnitOfWork : IUnitOfWork
         CinemaDbContext cinemaDbContext)
     {
         _db = cinemaDbContext;
-        this.Genres = genreRepository;
-        this.Medias = mediaRepository;
-        this.Movies = movieRepository;
+        Genres = genreRepository;
+        Medias = mediaRepository;
+        Movies = movieRepository;
     }
 
     public void SaveChanges()

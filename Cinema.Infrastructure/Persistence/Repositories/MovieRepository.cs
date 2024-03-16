@@ -29,7 +29,7 @@ internal class MovieRepository : IMovieRepository
         return _db.Movies
             .Include(m => m.Medias)
             .Include(m => m.Genres)
-            .Where(m => !m.Medias.Any(m => m.Status != Domain.Movies.Enums.DownloadStatus.Downloaded));
+            .Where(m => !m.Medias.Any(m => m.Status != Domain.Movies.Enums.LoadingStatus.Downloaded));
     }
 
     public Movie? GetById(string id)
@@ -46,8 +46,8 @@ internal class MovieRepository : IMovieRepository
             .Include(m => m.Medias)
             .Include(m => m.Genres)
             .Where(m => m.Medias.Any(
-                m => m.Status == Domain.Movies.Enums.DownloadStatus.Waiting ||
-                m.Status == Domain.Movies.Enums.DownloadStatus.Downloading)
+                m => m.Status == Domain.Movies.Enums.LoadingStatus.Waiting ||
+                m.Status == Domain.Movies.Enums.LoadingStatus.Downloading)
             );
     }
 

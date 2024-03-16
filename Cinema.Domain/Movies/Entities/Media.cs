@@ -8,7 +8,7 @@ public class Media : Aggregate
 {
     public string? FileName { get; set; }
     public string Url { get; set; }
-    public DownloadStatus Status { get; set; }
+    public LoadingStatus Status { get; set; }
     public DateTime CreateAt { get; set; } = DateTime.UtcNow;
     public MediaType Type { get; set; }
     public string MovieId { get; set; }
@@ -24,7 +24,7 @@ public class Media : Aggregate
         var media = new Media
         {
             Url = url,
-            Status = DownloadStatus.Waiting,
+            Status = LoadingStatus.Waiting,
             MovieId = movie.Id,
             Movie = movie,
             Type = type,

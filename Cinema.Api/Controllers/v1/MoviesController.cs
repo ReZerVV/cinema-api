@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using MovieCommands = Cinema.Application.Movies.Actions.Commands;
-using MovieQueries = Cinema.Application.Movies.Actions.Queries;
+using MovieCommands = Cinema.Application.Actions.Movies.Commands;
+using MovieQueries = Cinema.Application.Actions.Movies.Queries;
 
 namespace Cinema.Api.Controllers.v1;
 
@@ -20,28 +20,16 @@ public class MoviesController : ControllerBase
     public async Task<IActionResult> Create(
         [FromBody] MovieCommands.Create.Request request)
     {
-        try
-        {
-            return Ok(await _mediator.Send(request));
-        }
-        catch (Exception e)
-        {
-            return BadRequest(new { Error = new { Message = e.Message } });
-        }
+        await _mediator.Send(request);
+        return Ok();
     }
     
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(
         [FromRoute] string id)
     {
-        try
-        {
-            return Ok(await _mediator.Send(new MovieCommands.Delete.Request(id)));
-        }
-        catch (Exception e)
-        {
-            return BadRequest(new { Error = new { Message = e.Message } });
-        }
+        await _mediator.Send(new MovieCommands.Delete.Request(id));
+        return Ok();
     }
 
     [HttpPatch("{id}")]
@@ -49,15 +37,9 @@ public class MoviesController : ControllerBase
         [FromRoute] string id,
         [FromBody] MovieCommands.Update.Request request)
     {
-        try
-        {
-            request.Id = id;
-            return Ok(await _mediator.Send(request));
-        }
-        catch (Exception e)
-        {
-            return BadRequest(new { Error = new { Message = e.Message } });
-        }
+        request.Id = id;
+        await _mediator.Send(request);
+        return Ok();
     }
 
     [HttpPut("{id}")]
@@ -65,40 +47,28 @@ public class MoviesController : ControllerBase
         [FromRoute] string id,
         [FromBody] MovieCommands.UpdateAll.Request request)
     {
-        try
-        {
-            request.Id = id;
-            return Ok(await _mediator.Send(request));
-        }
-        catch (Exception e)
-        {
-            return BadRequest(new { Error = new { Message = e.Message } });
-        }
-    }
-
-    [HttpGet("downloads")]
-    public async Task<IActionResult> GetDownloads()
-    {
-        try
-        {
-            return Ok(await _mediator.Send(new MovieQueries.GetDownloads.Request()));
-        }
-        catch (Exception e)
-        {
-            return BadRequest(new { Error = new { Message = e.Message } });
-        }
+        request.Id = id;
+        await _mediator.Send(request);
+        return Ok();
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        try
-        {
-            return Ok(await _mediator.Send(new MovieQueries.GetAll.Request()));
-        }
-        catch (Exception e)
-        {
-            return BadRequest(new { Error = new { Message = e.Message } });
-        }
+        return Ok(await _mediator.Send(new MovieQueries.GetAll.Request()));
+    }
+
+    [HttpPost("loadings")]
+    public async Task<IActionResult> CreateLoadings(
+        [FromBody] MovieCommands.Loading.Request request)
+    {
+        await _mediator.Send(request);
+        return Ok();
+    }
+
+    [HttpGet("loadings")]
+    public async Task<IActionResult> GetLoadings()
+    {
+        return Ok(await _mediator.Send(new MovieQueries.GetLoadings.Request()));
     }
 }

@@ -18,13 +18,6 @@ public class GenresController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        try
-        {
-            return Ok(_mediator.Send(new GenresQueries.GetAll.Request()));
-        }
-        catch (Exception e)
-        {
-            return BadRequest(new { Error = new { Message = e.Message } });
-        }
+        return Ok(_mediator.Send(new GenresQueries.GetAll.Request()));
     }
 }
