@@ -21,7 +21,8 @@ public static class DependencyInjection
 
         services
             .AddMediatR(opt => opt.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()))
-            .AddSingleton<IMediaDownloadService, MediaDownloadService>();
+            .AddSingleton<IMediaDownloadService, MediaDownloadService>()
+            .AddTransient<IFileService, FileService>();
         return services;
     }
 }

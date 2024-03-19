@@ -1,4 +1,6 @@
-﻿using HtmlAgilityPack;
+﻿using Cinema.Application.Utils.Errors;
+using HtmlAgilityPack;
+using System.Net;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
@@ -10,8 +12,12 @@ public class KinogoApi
     {
         HtmlWeb web = new HtmlWeb();
         var htmlDoc = web.Load(url);
-        url = GetPlayer1HtmlNode(htmlDoc.DocumentNode)
-            .GetAttributeValue("data-src", string.Empty);
+        var player = GetPlayer1HtmlNode(htmlDoc.DocumentNode);
+        if (player == null)
+            throw new CinemaError(
+                CinemaErrorType.VALIDATION_ERROR,
+                "Unable to download the movie from this link.");
+        url = player.GetAttributeValue("data-src", string.Empty);
         return $"https:{url}";
     }
 
@@ -25,7 +31,7 @@ public class KinogoApi
             var node = htmlDoc.GetElementbyId("fs");
             var json = JsonSerializer.Deserialize<Dictionary<string, string>>(
                 node.GetAttributeValue("value", string.Empty));
-            var bestLink = json.Values
+            var urls = json.Values
                 .SelectMany(value => value.Split(","))
                 .OrderByDescending(value =>
                 {
@@ -34,15 +40,42 @@ public class KinogoApi
                             return movieQuality;
                     return 0;
                 })
-                .Select(value => Regex.Replace(value, @"\[\d+p\]", "https:"))
-                .First();
-            return (kpId, bestLink);
+                .Select(value => Regex.Replace(value, @"\[\d+p\]", "https:"));
+            foreach (var downloadUrl in urls)
+            {
+                var validDownloadUrl = GetValidUrl(downloadUrl);
+                if (validDownloadUrl != null)
+                    return (kpId, validDownloadUrl);
+            }
+            return null;
         }
         catch
         {
             throw new CinemaError(
                 Errors.CinemaErrorType.VALIDATION_ERROR,
                 "Incorrect link, system failed to load data from kinogo.film server.");
+        }
+    }
+
+    private static string? GetValidUrl(string url)
+    {
+        try
+        {
+            if (url == null)
+                return null;
+            HttpWebRequest request = WebRequest.CreateHttp(url);
+            request.AllowAutoRedirect = false;
+            using var response = (HttpWebResponse)request.GetResponse();
+            if (response.StatusCode == HttpStatusCode.NotFound)
+                return null;
+            if (response.StatusCode == HttpStatusCode.Redirect ||
+                response.StatusCode == HttpStatusCode.MovedPermanently)
+                return GetValidUrl(response.Headers["Location"]);
+            return url;
+        }
+        catch
+        {
+            return null;
         }
     }
 

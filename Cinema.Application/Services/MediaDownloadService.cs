@@ -23,7 +23,7 @@ internal class MediaDownloadService : IMediaDownloadService
         _hostingEnvironment = hostingEnvironment;
     }
 
-    public async Task Download(Media media)
+    public void Download(Media media)
     {
         try
         {
@@ -39,14 +39,23 @@ internal class MediaDownloadService : IMediaDownloadService
             }
             string fileName = GenerateFileNameByContentType(contentType);
             webClient.DownloadFileCompleted += new System.ComponentModel.AsyncCompletedEventHandler(
-                (e, args) =>
+                (sender, e) =>
                 {
-                    PublishEvent(new DownloadCompletedEvent(media.Id, fileName));
+                    if (e.Error != null)
+                        PublishEvent(new DownloadCanceledEvent(media.Id));
+                    else
+                        PublishEvent(new DownloadCompletedEvent(media.Id, fileName));
                     isDownloading = false;
                 }
             );
+            webClient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(
+                (sender, e) =>
+                {
+                    Console.WriteLine($"{e.ProgressPercentage}({e.BytesReceived}/{e.TotalBytesToReceive})");
+                }
+            );
             string filePath = Path.Combine(_hostingEnvironment.WebRootPath, fileName);
-            await webClient.DownloadFileTaskAsync(new Uri(media.Url), filePath);
+            webClient.DownloadFileAsync(new Uri(media.Url), filePath);
         }
         catch (Exception e)
         {

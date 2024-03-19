@@ -45,10 +45,7 @@ internal class MovieRepository : IMovieRepository
         return _db.Movies
             .Include(m => m.Medias)
             .Include(m => m.Genres)
-            .Where(m => m.Medias.Any(
-                m => m.Status == Domain.Movies.Enums.LoadingStatus.Waiting ||
-                m.Status == Domain.Movies.Enums.LoadingStatus.Downloading)
-            );
+            .Where(m => m.Medias.Any(m => m.Status != Domain.Movies.Enums.LoadingStatus.Downloaded));
     }
 
     public void Update(Movie entity)

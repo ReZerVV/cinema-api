@@ -19,17 +19,26 @@ public class Media : Aggregate
         
     }
 
-    public static Media Create(Movie movie, string url, MediaType type)
+    public static Media CreateDownload(string url, MediaType type)
     {
         var media = new Media
         {
             Url = url,
             Status = LoadingStatus.Waiting,
-            MovieId = movie.Id,
-            Movie = movie,
             Type = type,
         };
         media.RaiseEvent(new DownloadAddedEvent(media.Id));
+        return media;
+    }
+
+    public static Media Create(string fileName, MediaType type)
+    {
+        var media = new Media
+        {
+            FileName = fileName,
+            Status = LoadingStatus.Downloaded,
+            Type = type,
+        };
         return media;
     }
 }

@@ -1,8 +1,5 @@
 ﻿using Cinema.Application.Services.Abstractions;
-using Cinema.Application.Utils.Api.Kinogo;
-using Cinema.Application.Utils.Api.Kinopoisk;
 using Cinema.Domain.Common;
-using Cinema.Domain.Genres.Entities;
 using Cinema.Domain.Movies.Entities;
 using Cinema.Domain.Movies.Enums;
 using Cinema.Domain.Movies.Events;
@@ -27,7 +24,7 @@ internal class EventHandlers :
         _mediaDownloadService = mediaDownloadService;
     }
 
-    public async Task Handle(DownloadAddedEvent notification, CancellationToken cancellationToken)
+    public Task Handle(DownloadAddedEvent notification, CancellationToken cancellationToken)
     {
         var media = _unitOfWork.Medias.GetById(notification.Id);
         if (_mediaDownloadService.IsDownloading())
@@ -37,9 +34,10 @@ internal class EventHandlers :
         else
         {
             media.Status = LoadingStatus.Downloading;
-            await _mediaDownloadService.Download(media);
+            _mediaDownloadService.Download(media);
         }
         _unitOfWork.SaveChanges();
+        return Task.CompletedTask;
     }
 
     public Task Handle(DownloadStartedEvent notification, CancellationToken cancellationToken)

@@ -1,6 +1,7 @@
 using Cinema.Api.Middlewares;
 using Cinema.Application;
 using Cinema.Infrastructure;
+using Microsoft.AspNetCore.Http.Features;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,11 @@ builder.Services.AddCors(
             .AllowCredentials()
             .AllowAnyHeader()
             .AllowAnyMethod()));
+
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = 268435456;
+});
 
 var app = builder.Build();
 

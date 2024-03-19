@@ -17,8 +17,9 @@ public class MoviesController : ControllerBase
     }
 
     [HttpPost]
+    [RequestSizeLimit(10737418240)]
     public async Task<IActionResult> Create(
-        [FromBody] MovieCommands.Create.Request request)
+        [FromForm] MovieCommands.Create.Request request)
     {
         await _mediator.Send(request);
         return Ok();
