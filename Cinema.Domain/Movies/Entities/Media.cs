@@ -7,7 +7,7 @@ namespace Cinema.Domain.Movies.Entities;
 public class Media : Aggregate
 {
     public string? FileName { get; set; }
-    public string Url { get; set; }
+    public string? Url { get; set; }
     public LoadingStatus Status { get; set; }
     public DateTime CreateAt { get; set; } = DateTime.UtcNow;
     public MediaType Type { get; set; }
