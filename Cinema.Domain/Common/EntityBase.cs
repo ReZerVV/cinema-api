@@ -7,6 +7,7 @@ public abstract class EntityBase
 {
     [Key]
     public string Id { get; private set; }
+    public DateTime CreateAt { get; private set; } = DateTime.UtcNow;
 
     [NotMapped]
     public List<IDomainEvent> DomainEvents { get; } = new List<IDomainEvent>();

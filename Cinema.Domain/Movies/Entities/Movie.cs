@@ -1,6 +1,5 @@
 ﻿using Cinema.Domain.Common;
 using Cinema.Domain.Genres.Entities;
-using Cinema.Domain.Movies.Enums;
 
 namespace Cinema.Domain.Movies.Entities;
 
@@ -18,7 +17,6 @@ public class Movie : AggregateRoot
     public int Votes { get; set; }
     public ICollection<Media> Medias { get; set; } = new List<Media>();
     public ICollection<Genre> Genres { get; set; } = new List<Genre>();
-
 
     public Movie() : base(Guid.NewGuid().ToString())
     {

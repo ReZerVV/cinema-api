@@ -38,12 +38,29 @@ internal class MovieRepository : IMovieRepository
             .SingleOrDefault(m => m.Id == id);
     }
 
-    public IEnumerable<Movie> GetDownloads()
+    public IEnumerable<Movie> Search(string? query = null, string? sort = null, string? type = null, string? genre = null)
     {
-        return _db.Movies
+        var movies = _db.Movies
             .Include(m => m.Medias)
             .Include(m => m.Genres)
-            .Where(m => !m.Medias.Any(m => m.Status != Domain.Movies.Enums.LoadingStatus.Downloaded));
+            .Where(m => !m.Medias.Any(m => m.Status != Domain.Movies.Enums.LoadingStatus.Downloaded))
+            .Where(m =>
+                (query == null || (
+                        m.Name.ToUpper().Contains(query.ToUpper()) ||
+                        m.EnName.ToUpper().Contains(query.ToUpper()) ||
+                        m.Description.ToUpper().Contains(query.ToUpper()) ||
+                        m.ShortDescription.ToUpper().Contains(query.ToUpper())
+                    )
+                ) &&
+                (type == null || m.Type.ToUpper() == type.ToUpper()) &&
+                (genre == null || m.Type.ToUpper() == type.ToUpper())
+            );
+        return sort switch
+        {
+            "popular" => movies.OrderByDescending(m => m.Votes),
+            "rating" => movies.OrderByDescending(m => m.Rating),
+            _ => movies
+        };
     }
 
     public void Update(Movie entity)

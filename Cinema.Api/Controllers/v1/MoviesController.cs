@@ -54,9 +54,28 @@ public class MoviesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll(
+        [FromQuery] int limit,
+        [FromQuery] int page,
+        [FromQuery] string? query = null,
+        [FromQuery] string? type = null,
+        [FromQuery] string? sort = null,
+        [FromQuery] string? genre = null)
     {
-        return Ok(await _mediator.Send(new MovieQueries.GetAll.Request()));
+        return Ok(await _mediator.Send(new MovieQueries.GetAll.Request(limit, page)
+        {
+            Query = query,
+            Type = type,
+            Sort = sort,
+            Genre = genre
+        }));
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(
+        [FromRoute] string id)
+    {
+        return Ok(await _mediator.Send(new MovieQueries.GetById.Request(id)));
     }
 
     [HttpPost("loadings")]
@@ -67,9 +86,11 @@ public class MoviesController : ControllerBase
         return Ok();
     }
 
-    [HttpGet("loadings")]
-    public async Task<IActionResult> GetLoadings()
+    [HttpGet("histories")]
+    public async Task<IActionResult> GetHistories(
+        [FromQuery] int limit,
+        [FromQuery] int page)
     {
-        return Ok(await _mediator.Send(new MovieQueries.GetLoadings.Request()));
+        return Ok(await _mediator.Send(new MovieQueries.GetHistories.Request(limit, page)));
     }
 }
