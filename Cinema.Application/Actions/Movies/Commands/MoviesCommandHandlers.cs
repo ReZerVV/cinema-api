@@ -65,7 +65,7 @@ internal class MoviesCommandHandlers :
 
         if (request.BackdropUrl != null)
         {
-            movie.AddMedia(Media.CreateDownload(request.VideoUrl, Domain.Movies.Enums.MediaType.Backdrop));
+            movie.AddMedia(Media.CreateDownload(request.BackdropUrl, Domain.Movies.Enums.MediaType.Backdrop));
         }
         else if (request.Backdrop != null)
         {
