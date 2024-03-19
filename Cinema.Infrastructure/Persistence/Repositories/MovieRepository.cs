@@ -1,7 +1,6 @@
 ﻿using Cinema.Domain.Movies.Entities;
 using Cinema.Domain.Movies.Repositories;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace Cinema.Infrastructure.Persistence.Repositories;
 
@@ -28,8 +27,7 @@ internal class MovieRepository : IMovieRepository
     {
         return _db.Movies
             .Include(m => m.Medias)
-            .Include(m => m.Genres)
-            .Where(m => !m.Medias.Any(m => m.Status != Domain.Movies.Enums.LoadingStatus.Downloaded));
+            .Include(m => m.Genres);
     }
 
     public Movie? GetById(string id)
@@ -45,7 +43,7 @@ internal class MovieRepository : IMovieRepository
         return _db.Movies
             .Include(m => m.Medias)
             .Include(m => m.Genres)
-            .Where(m => m.Medias.Any(m => m.Status != Domain.Movies.Enums.LoadingStatus.Downloaded));
+            .Where(m => !m.Medias.Any(m => m.Status != Domain.Movies.Enums.LoadingStatus.Downloaded));
     }
 
     public void Update(Movie entity)
