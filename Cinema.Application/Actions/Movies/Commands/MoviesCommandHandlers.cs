@@ -45,15 +45,58 @@ internal class MoviesCommandHandlers :
                     genre = Genre.Create(gName);
                 return genre;
             }));
-        var posterFileName = Path.Combine("i", $"{Guid.NewGuid()}{Path.GetExtension(request.Poster.FileName)}");
-        _fileService.Load(request.Poster, posterFileName);
-        movie.AddMedia(Media.Create(posterFileName, Domain.Movies.Enums.MediaType.Poster));
-        var backdropFileName = Path.Combine("i", $"{Guid.NewGuid()}{Path.GetExtension(request.Backdrop.FileName)}");
-        _fileService.Load(request.Backdrop, backdropFileName);
-        movie.AddMedia(Media.Create(backdropFileName, Domain.Movies.Enums.MediaType.Backdrop));
-        var videoFileName = Path.Combine("v", $"{Guid.NewGuid()}{Path.GetExtension(request.Video.FileName)}");
-        _fileService.Load(request.Video, videoFileName);
-        movie.AddMedia(Media.Create(videoFileName, Domain.Movies.Enums.MediaType.Video));
+
+        if (request.PosterUrl != null)
+        {
+            movie.AddMedia(Media.CreateDownload(request.PosterUrl, Domain.Movies.Enums.MediaType.Poster));
+        }
+        else if (request.Poster != null)
+        {
+            var posterFileName = Path.Combine("i", $"{Guid.NewGuid()}{Path.GetExtension(request.Poster.FileName)}");
+            _fileService.Load(request.Poster, posterFileName);
+            movie.AddMedia(Media.Create(posterFileName, Domain.Movies.Enums.MediaType.Poster));
+        }
+        else
+        {
+            throw new CinemaError(
+                Utils.Errors.CinemaErrorType.VALIDATION_ERROR,
+                "A link or file must be provided for the poster.");
+        }
+
+        if (request.BackdropUrl != null)
+        {
+            movie.AddMedia(Media.CreateDownload(request.VideoUrl, Domain.Movies.Enums.MediaType.Video));
+        }
+        else if (request.Backdrop != null)
+        {
+            var backdropFileName = Path.Combine("i", $"{Guid.NewGuid()}{Path.GetExtension(request.Backdrop.FileName)}");
+            _fileService.Load(request.Backdrop, backdropFileName);
+            movie.AddMedia(Media.Create(backdropFileName, Domain.Movies.Enums.MediaType.Backdrop));
+        }
+        else
+        {
+            throw new CinemaError(
+                Utils.Errors.CinemaErrorType.VALIDATION_ERROR,
+                "A link or file must be provided for the backdrop.");
+        }
+
+        if (request.VideoUrl != null)
+        {
+            movie.AddMedia(Media.CreateDownload(request.VideoUrl, Domain.Movies.Enums.MediaType.Video));
+        }
+        else if (request.Video != null)
+        {
+            var videoFileName = Path.Combine("v", $"{Guid.NewGuid()}{Path.GetExtension(request.Video.FileName)}");
+            _fileService.Load(request.Video, videoFileName);
+            movie.AddMedia(Media.Create(videoFileName, Domain.Movies.Enums.MediaType.Video));
+        }
+        else
+        {
+            throw new CinemaError(
+                Utils.Errors.CinemaErrorType.VALIDATION_ERROR,
+                "A link or file must be provided for the video.");
+        }
+        
         _unitOfWork.Movies.Create(movie);
         _unitOfWork.SaveChanges();
     }

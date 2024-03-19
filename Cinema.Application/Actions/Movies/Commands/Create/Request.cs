@@ -14,7 +14,13 @@ public record Request(
     string Country,
     float Rating,
     int Votes,
-    IFormFile Poster,
-    IFormFile Backdrop,
-    IFormFile Video,
-    IEnumerable<string> Genres) : IRequest;
+    IEnumerable<string> Genres) : IRequest
+{
+    public IFormFile? Poster { get; set; } = null;
+    public IFormFile? Backdrop { get; set; } = null;
+    public IFormFile? Video { get; set; } = null;
+
+    public string? PosterUrl { get; set; } = null;
+    public string? BackdropUrl { get; set; } = null;
+    public string? VideoUrl { get; set; } = null;
+}
