@@ -55,8 +55,8 @@ public class MoviesController : ControllerBase
 
     [HttpGet]
     public async Task<IActionResult> GetAll(
-        [FromQuery] int limit,
-        [FromQuery] int page,
+        [FromQuery] int limit = 10,
+        [FromQuery] int page = 0,
         [FromQuery] string? query = null,
         [FromQuery] string? type = null,
         [FromQuery] string? sort = null,
