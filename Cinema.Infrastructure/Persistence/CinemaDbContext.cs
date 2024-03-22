@@ -14,6 +14,8 @@ public class CinemaDbContext : DbContext
     public DbSet<Media> Medias { get; set; }
     public DbSet<Movie> Movies { get; set; }
 
+
+
     public CinemaDbContext(
         DbContextOptions options,
         IMediator mediator) : base(options)

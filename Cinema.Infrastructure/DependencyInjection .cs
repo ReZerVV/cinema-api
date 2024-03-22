@@ -13,13 +13,13 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
+        //services.AddDbContext<CinemaDbContext>(opt => opt.UseSqlServer(configuration.GetConnectionString("SqlServer")));
+        services.AddDbContext<CinemaDbContext>(opt => opt.UseInMemoryDatabase("Cinema.DB"));
         services
             .AddTransient<IGenreRepository, GenreRepository>()
             .AddTransient<IMediaRepository, MediaRepository>()
             .AddTransient<IMovieRepository, MovieRepository>()
             .AddTransient<IUnitOfWork, UnitOfWork>();
-        services
-            .AddDbContext<CinemaDbContext>(opt => opt.UseInMemoryDatabase("CinemaTest.DB"));
         return services;
     }
 }

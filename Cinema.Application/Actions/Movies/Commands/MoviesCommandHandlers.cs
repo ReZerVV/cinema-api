@@ -106,7 +106,7 @@ internal class MoviesCommandHandlers :
         if (_unitOfWork.Movies.GetById(request.Id) is not Movie movie)
             throw new Exception("Movie is not found");
         foreach (var media in movie.Medias)
-            if (_fileService.Remove(media.FileName))
+            if (media.Status == Domain.Movies.Enums.LoadingStatus.Downloaded && _fileService.Remove(media.FileName))
                 _unitOfWork.Medias.Delete(media);
         _unitOfWork.Movies.Delete(movie);
         _unitOfWork.SaveChanges();
