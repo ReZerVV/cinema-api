@@ -34,8 +34,6 @@ internal class MoviesQueriesHandlers :
             pageCount);
     }
 
-
-
     public async Task<GetAll.Response> Handle(GetAll.Request request, CancellationToken cancellationToken)
     {
         var movies = _unitOfWork.Movies.Search(request.Query, request.Sort, request.Type, request.Genre).ToList();

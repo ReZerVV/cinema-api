@@ -17,7 +17,8 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddCors(
     opt => opt.AddDefaultPolicy(
         policy => policy
-            .AllowAnyOrigin()
+            .WithOrigins("http://192.168.31.113:5173", "http://192.168.31.201:5173", "http://localhost:5173")
+            .AllowCredentials()
             .AllowAnyHeader()
             .AllowAnyMethod()));
 
